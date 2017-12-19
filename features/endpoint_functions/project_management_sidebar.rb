@@ -9,7 +9,6 @@ def create_project
                   cookies: @test_user.session_cookie,
                   payload: new_project_payload)
   # check if 200 OK is received
-
   assert_equal(200, response.code, "Project was not created! Response: #{response}")
   response_hash = JSON.parse(response)
   assert_equal("test_project_#{@session_id}", response_hash['name'],
@@ -19,28 +18,41 @@ def create_project
                'Wrong project type')
 end
 
-def fetch_project_id
+def fetch_created_project_id
   response = get('https://www.apimation.com/projects',
                  headers: {},
                  cookies: @test_user.session_cookie)
   # check if 200 OK is received
-  assert_equal(200, response.code, "Could not get environments! Response: #{response}")
+  assert_equal(200, response.code, "Could not get projects! Response: #{response}")
   response_hash = JSON.parse(response)
-  # set flag and id variable
+  # set flag and project id
   project_id = nil
   project_found = false
-  # search for variable
+  # search for a project
   response_hash.each do |project|
     next unless project['name'].to_s == "test_project_#{@session_id}"
     project_id = project['id'].to_s
     project_found = true
   end
-  assert_equal(true, project_found, 'Environment was not found')
+  assert_equal(true, project_found, 'Project ID was not found')
   project_id
 end
 
-def set_project_as_active
-  project_id = fetch_project_id
+def fetch_all_project_ids
+  response = get('https://www.apimation.com/projects',
+                 headers: {},
+                 cookies: @test_user.session_cookie)
+  # check if 200 OK is received
+  assert_equal(200, response.code, "Could not get projects! Response: #{response}")
+  response_hash = JSON.parse(response)
+  project_ids = []
+  response_hash.each do |project|
+    project_ids.push(project['id'])
+  end
+  project_ids
+end
+
+def set_project_as_active(project_id)
   response = put("https://www.apimation.com/projects/active/#{project_id}",
                  headers: { 'ContentType' => 'application/json' },
                  cookies: @test_user.session_cookie)
@@ -103,7 +115,7 @@ def create_global_vars(env_id, global_variables)
                  cookies: @test_user.session_cookie,
                  payload: global_var_payload)
   # check if response is correct
-  assert_equal(204, response.code, "Could not get environments! Response: #{response}")
+  assert_equal(204, response.code, "Could not create global variables! Response: #{response}")
 end
 
 def check_global_vars(env_id, expected_global_variables)

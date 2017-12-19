@@ -4,5 +4,4 @@ Before() do
 end
 
 After() do
-  puts "this happens after a test"
 end

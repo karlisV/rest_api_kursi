@@ -1,4 +1,3 @@
-@wip
 Feature: Project management sidebar feature
   Test project management features
 
@@ -21,7 +20,7 @@ Feature: Project management sidebar feature
     | key      | value    |
     | $user    | prodUser |
     | $pwd     | prodPwd  |
-    Then I check if these variables are created for "DEV" environment:
+    And I check if these variables are created for "DEV" environment:
     | key      | value   |
     | $user    | devUser |
     | $pwd     | devPwd  |
