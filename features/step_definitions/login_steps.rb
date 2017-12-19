@@ -13,3 +13,4 @@ end
 Then(/^I check if I am not logged in and I can access my personal information$/) do
   check_user_not_logged_in
 end
+
